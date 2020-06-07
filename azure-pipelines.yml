@@ -16,7 +16,6 @@ steps:
 - task: Cargo@1
   inputs:
     cargoCommand: 'build'
-    cargoWorkingDir: 'src'
     cargoCommandOptions: '--color=always --all --all-targets'
     verbose: false
 
