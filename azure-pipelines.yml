@@ -17,13 +17,11 @@ jobs:
   - task: Cargo@1
     inputs:
       cargoCommand: 'build'
-      cargoWorkingDir: 's'
       cargoCommandOptions: '--color=always --all --all-targets'
       verbose: false
   - task: Cargo@1
     inputs:
       cargoCommand: 'test'
-      cargoWorkingDir: 's'
       cargoCommandOptions: '--color=always --no-run'
       verbose: true
 
@@ -37,16 +35,13 @@ jobs:
   - task: Cargo@1
     inputs:
       cargoCommand: 'build'
-      cargoWorkingDir: 's'
       cargoCommandOptions: '--color=always --all --all-targets'
       verbose: false
   - task: Cargo@1
     inputs:
       cargoCommand: 'test'
-      cargoWorkingDir: 's'
       cargoCommandOptions: '--color=always --no-run'
       verbose: true
-
 - job: Macos
   pool:
     vmImage: 'macos-latest'
@@ -57,12 +52,10 @@ jobs:
   - task: Cargo@1
     inputs:
       cargoCommand: 'build'
-      cargoWorkingDir: 's'
       cargoCommandOptions: '--color=always --all --all-targets'
       verbose: false
   - task: Cargo@1
     inputs:
       cargoCommand: 'test'
-      cargoWorkingDir: 's'
       cargoCommandOptions: '--color=always --no-run'
       verbose: true
