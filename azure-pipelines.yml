@@ -3,10 +3,6 @@
 # Add steps that build, run tests, deploy, and more:
 # https://aka.ms/yaml
 
-trigger:
-- 'master'
-- 'develop'
-
 pool:
   vmImage: 'ubuntu-latest'
 
@@ -32,6 +28,23 @@ jobs:
 - job: Ubuntu
   pool:
     vmImage: 'ubuntu-latest'
+  steps:
+  - task: Rust@1
+    inputs:
+      installNightly: false
+  - task: Cargo@1
+    inputs:
+      cargoCommand: 'build'
+      cargoCommandOptions: '--color=always --all --all-targets'
+      verbose: false
+  - task: Cargo@1
+    inputs:
+      cargoCommand: 'test'
+      cargoCommandOptions: '--color=always --no-run'
+      verbose: true
+- job: Macos
+  pool:
+    vmImage: 'macos-latest'
   steps:
   - task: Rust@1
     inputs:
