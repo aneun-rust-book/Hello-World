@@ -8,23 +8,15 @@ trigger:
 
 stages:
 - stage: Linux
-  pool:
-    vmImage: 'windows-latest'
-  jobs:
-  - job: Build
-    steps:
-    - task: Rust@1
-      inputs:
-        installNightly: false
-    - task: Cargo@1
-      inputs:
-        cargoCommand: 'build'
-        cargoCommandOptions: '--color=always --all --all-targets'
-        verbose: false
-
-- stage: Windows
-  pool:
-    vmImage: 'windows-latest'
+  strategy:
+    matrix:
+      Windows:
+        pool:
+          vmImage: 'windows-latest'
+      Linux:
+        pool:
+          vmImage: 'ubuntu-latest'
+    maxParallel: 2
   jobs:
   - job: Build
     steps:
