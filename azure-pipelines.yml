@@ -6,16 +6,34 @@
 trigger:
 - master
 
-pool:
-  vmImage: 'ubuntu-latest'
+stages:
+- stage: Linux
+  pool:
+    vmImage: 'windows-latest'
+  jobs:
+  - job: Build
+    steps:
+    - task: Rust@1
+      inputs:
+        installNightly: false
+    - task: Cargo@1
+      inputs:
+        cargoCommand: 'build'
+        cargoCommandOptions: '--color=always --all --all-targets'
+        verbose: false
 
-steps:
--  task: Rust@1
-   inputs:
-    installNightly: false 
-- task: Cargo@1
-  inputs:
-    cargoCommand: 'build'
-    cargoCommandOptions: '--color=always --all --all-targets'
-    verbose: false
+- stage: Windows
+  pool:
+    vmImage: 'windows-latest'
+  jobs:
+  - job: Build
+    steps:
+    - task: Rust@1
+      inputs:
+        installNightly: false
+    - task: Cargo@1
+      inputs:
+        cargoCommand: 'build'
+        cargoCommandOptions: '--color=always --all --all-targets'
+        verbose: false
 
