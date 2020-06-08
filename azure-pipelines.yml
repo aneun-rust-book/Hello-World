@@ -8,17 +8,17 @@ trigger:
 
 stages:
 - stage: Linux
-  strategy:
-    matrix:
-      Windows:
-        pool:
-          vmImage: 'windows-latest'
-      Linux:
-        pool:
-          vmImage: 'ubuntu-latest'
-    maxParallel: 2
   jobs:
   - job: Build
+    strategy:
+      matrix:
+        Windows:
+          pool:
+            vmImage: 'windows-latest'
+        Linux:
+          pool:
+            vmImage: 'ubuntu-latest'
+      maxParallel: 2
     steps:
     - task: Rust@1
       inputs:
