@@ -1,0 +1,61 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+jobs:
+- job: Windows
+  pool:
+    vmImage: 'windows-latest'
+  steps:
+  - task: Rust@1
+    inputs:
+      installNightly: false
+  - task: Cargo@1
+    inputs:
+      cargoCommand: 'build'
+      cargoCommandOptions: '--color=always --all --all-targets'
+      verbose: false
+  - task: Cargo@1
+    inputs:
+      cargoCommand: 'test'
+      cargoCommandOptions: '--color=always --no-run'
+      verbose: true
+
+- job: Ubuntu
+  pool:
+    vmImage: 'ubuntu-latest'
+  steps:
+  - task: Rust@1
+    inputs:
+      installNightly: false
+  - task: Cargo@1
+    inputs:
+      cargoCommand: 'build'
+      cargoCommandOptions: '--color=always --all --all-targets'
+      verbose: false
+  - task: Cargo@1
+    inputs:
+      cargoCommand: 'test'
+      cargoCommandOptions: '--color=always --no-run'
+      verbose: true
+- job: Macos
+  pool:
+    vmImage: 'macos-latest'
+  steps:
+  - task: Rust@1
+    inputs:
+      installNightly: false
+  - task: Cargo@1
+    inputs:
+      cargoCommand: 'build'
+      cargoCommandOptions: '--color=always --all --all-targets'
+      verbose: false
+  - task: Cargo@1
+    inputs:
+      cargoCommand: 'test'
+      cargoCommandOptions: '--color=always --no-run'
+      verbose: true
