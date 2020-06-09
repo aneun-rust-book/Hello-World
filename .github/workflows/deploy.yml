@@ -44,6 +44,7 @@ jobs:
     needs: [ubuntu-deploy, windows-deploy]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Generate build number
         run: "cargo pkgid | cut -d# -f2 | cut -d: -f2 | ::set-env name=VERSION::"
       - name: Create a Release
