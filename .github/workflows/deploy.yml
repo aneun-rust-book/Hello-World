@@ -39,51 +39,53 @@ jobs:
       with:
         name: hello_world-windows
         path: target/release/hello_world.exe
-  
+
+
   create-release:
     needs: [ubuntu-deploy, windows-deploy]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - name: Generate build number
-        run: "cargo pkgid | cut -d# -f2 | cut -d: -f2 | ::set-env name=VERSION::"
+        run: |
+          echo ::set-env name=VERSION::$(cargo pkgid | cut -d# -f2 | cut -d: -f2)
       - name: Create a Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${{ VERSION }}
-          release_name: v${{ VERSION }}
-    
+          tag_name: v${{ env.VERSION }}
+          release_name: v${{ env.VERSION }}
+
       - name: Download Ubuntu Artifact
         uses: actions/download-artifact@v2
         with:
           name: hello_world-ubuntu
-          
+
       - name: Upload Ubuntu Release Asset
-        id: upload-ubuntu-release-asset 
+        id: upload-ubuntu-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           asset_path: hello_world
           asset_name: hello_world
           asset_content_type: application/x-elf
-      
+
       - name: Download Windows Artifact
         uses: actions/download-artifact@v2
         with:
           name: hello_world-windows
-          
+
       - name: Upload Ubuntu Release Asset
-        id: upload-windows-release-asset 
+        id: upload-windows-release-asset
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps
           asset_path: hello_world.exe
           asset_name: hello_world.exe
           asset_content_type: application/x-msdownload
-  
