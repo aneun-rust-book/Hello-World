@@ -9,12 +9,7 @@ env:
 
 jobs:
   
-  ubuntu-deploy:
 
-    runs-on: ubuntu-latest
-
-
-  
   create-release:
     #needs: [ubuntu-deploy, windows-deploy]
     runs-on: ubuntu-latest
