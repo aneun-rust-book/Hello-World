@@ -53,8 +53,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v${ VERSION }
-          release_name: v${ VERSION }
+          tag_name: v${{ env.VERSION }}
+          release_name: v${{ env.VERSION }}
     
       - name: Download Ubuntu Artifact
         uses: actions/download-artifact@v2
