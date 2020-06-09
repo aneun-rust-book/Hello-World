@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [ deploy ]
+    branches: [ release ]
     
 env:
   CARGO_TERM_COLOR: always
