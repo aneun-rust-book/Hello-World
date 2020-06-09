@@ -1,0 +1,92 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ deploy ]
+    
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  
+  ubuntu-deploy:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: cargo build --release --verbose
+    - name: Run tests
+      run: cargo test --verbose
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: hello_world-ubuntu
+        path: target/release/hello_world
+        
+  windows-deploy:
+    
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      run: cargo build --release --verbose
+    - name: Run tests
+      run: cargo test --verbose
+    - name: Upload artifact
+      uses: actions/upload-artifact@v2
+      with:
+        name: hello_world-windows
+        path: target/release/hello_world.exe
+  
+  create-release:
+    needs: [ubuntu-deploy, windows-deploy]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate build number
+        id: buildnumber
+        uses: einaregilsson/build-number@v2 
+        with:
+          token: ${{secrets.github_token}}        
+      - name: Create a Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: v1.0.${{ steps.buildnumber.outputs.build_number }}
+          release_name: v1.0.${{ steps.buildnumber.outputs.build_number }}
+    
+      - name: Download Ubuntu Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: hello_world-ubuntu
+          
+      - name: Upload Ubuntu Release Asset
+        id: upload-ubuntu-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: hello_world
+          asset_name: hello_world
+          asset_content_type: application/x-elf
+      
+      - name: Download Windows Artifact
+        uses: actions/download-artifact@v2
+        with:
+          name: hello_world-windows
+          
+      - name: Upload Ubuntu Release Asset
+        id: upload-windows-release-asset 
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+          asset_path: hello_world.exe
+          asset_name: hello_world.exe
+          asset_content_type: application/x-msdownload
+  
