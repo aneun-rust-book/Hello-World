@@ -24,4 +24,4 @@ jobs:
     - name: Run tests
       run: cargo test --verbose
     - name: Test version
-      run: echo $CARGO_PKG_VERSION
+      run: cargo pkgid | cut -d# -f2 | cut -d: -f2
